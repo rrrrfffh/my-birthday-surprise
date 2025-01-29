@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Surprise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #ffb6c1, #add8e6);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            font-family: 'Lobster', cursive;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .click-text {
+            font-size: 70px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cake {
+            width: 300px;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            margin-top: 20px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .happy-birthday {
+            font-size: 60px;
+            font-weight: bold;
+            color: white;
+            display: none;
+            animation: birthday 2s forwards;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes birthday {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes mouse-sparkle {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="click-text" id="click-text">
+        Just click it
+    </div>
+
+    <div class="cake" id="cake" style="background-image: url('images/cake.png');"></div>
+    <div class="happy-birthday" id="happy-birthday">HAPPY BIRTHDAY CAY BEBEĞİM</div>
+
+    <script>
+        let cakeImages = [
+            'images/cake-1.png',
+            'images/cake-2.png',
+            'images/cake-3.png',
+            'images/cake-4.png',
+            'images/cake-5.png',
+            'images/cake-6.png'
+        ];
+
+        let currentImageIndex = 0;
+        const cakeElement = document.getElementById('cake');
+        const clickText = document.getElementById('click-text');
+        const happyBirthdayText = document.getElementById('happy-birthday');
+
+        // Mouse hareketinde parıltılar
+        let timeout;
+        const sparkleEffect = (e) => {
+            const sparkle = document.createElement('div');
+            sparkle.style.position = 'absolute';
+            sparkle.style.width = `${Math.random() * 15 + 5}px`;
+            sparkle.style.height = `${Math.random() * 15 + 5}px`;
+            sparkle.style.borderRadius = '50%';
+            sparkle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.animation = 'mouse-sparkle 0.6s ease-out';
+            sparkle.style.left = `${e.pageX - sparkle.offsetWidth / 2}px`;
+            sparkle.style.top = `${e.pageY - sparkle.offsetHeight / 2}px`;
+
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => {
+                sparkle.remove();
+            }, 600);
+        };
+
+        const generateRandomSparks = () => {
+            const randomX = Math.random() * window.innerWidth;
+            const randomY = Math.random() * window.innerHeight;
+
+            const sparkle = document.createElement('div');
+            sparkle.style.position = 'absolute';
+            sparkle.style.width = `${Math.random() * 15 + 5}px`;
+            sparkle.style.height = `${Math.random() * 15 + 5}px`;
+            sparkle.style.borderRadius = '50%';
+            sparkle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.animation = 'sparkle 0.6s ease-out';
+            sparkle.style.left = `${randomX - sparkle.offsetWidth / 2}px`;
+            sparkle.style.top = `${randomY - sparkle.offsetHeight / 2}px`;
+
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => {
+                sparkle.remove();
+            }, 600);
+        };
+
+        document.body.addEventListener('mousemove', (e) => {
+            clearTimeout(timeout);
+            sparkleEffect(e); // Mouse hareket ettikçe pırıltılar
+
+            timeout = setTimeout(() => {
+                // Mouse durduğunda arka planda pırıltı üret
+                setInterval(generateRandomSparks, 200); // Her 200ms'de bir pırıltı
+            }, 300); // 300ms hareket etmeyince pırıltı başlasın
+        });
+
+        // Start the cake interaction
+        clickText.addEventListener('click', function() {
+            clickText.style.display = 'none'; // Hide "Just click it" text
+            cakeElement.style.display = 'block'; // Show the cake image after first click
+        });
+
+        // When the user clicks on the cake, it will go through the sequence of images
+        cakeElement.addEventListener('click', function() {
+            if (currentImageIndex >= cakeImages.length) {
+                happyBirthdayText.style.display = 'block';
+                setInterval(() => {
+                    const sparkle = document.createElement('div');
+                    sparkle.style.position = 'absolute';
+                    sparkle.style.width = `${Math.random() * 15 + 5}px`;
+                    sparkle.style.height = `${Math.random() * 15 + 5}px`;
+                    sparkle.style.borderRadius = '50%';
+                    sparkle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
+                    sparkle.style.pointerEvents = 'none';
+                    sparkle.style.animation = 'sparkle 0.6s ease-out';
+                    sparkle.style.left = `${Math.random() * window.innerWidth}px`;
+                    sparkle.style.top = `${Math.random() * window.innerHeight}px`;
+
+                    document.body.appendChild(sparkle);
+
+                    setTimeout(() => {
+                        sparkle.remove();
+                    }, 600);
+                }, 200); // Sparkle every 200ms
+                return;
+            }
+
+            cakeElement.style.backgroundImage = `url('${cakeImages[currentImageIndex]}')`;
+            currentImageIndex++;
+        });
+    </script>
+</body>
+</html>
